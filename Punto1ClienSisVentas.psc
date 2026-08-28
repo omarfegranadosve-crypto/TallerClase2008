@@ -102,7 +102,7 @@ Algoritmo Punto1ClienSisVentas
         Escribir " CLIENTE: ", nomclient[j]
         Escribir "     "
         Escribir "Subtotal acumulado:   $", subtotalCliente[j]
-        Escribir "El porcentaje de descuento aplicado es; ",prodDesc[j, j]*100, "%"
+        Escribir "El porcentaje de descuento aplicado es; ",prodDesc[j]*100, "%"
         Escribir "Descuento aplicado:  -$", descuentoCliente[j]
         Escribir "Valor de IVA (19%):   +$", ivaCliente[j]
         Escribir "TOTAL A PAGAR:  $", totalCliente[j]
