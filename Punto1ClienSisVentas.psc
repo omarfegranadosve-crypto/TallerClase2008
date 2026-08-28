@@ -27,9 +27,10 @@ FinFuncion
 
 Algoritmo Punto1ClienSisVentas
     
-    Definir cl, maxProd, i, j Como Entero
-    Definir sumaTotal, promedioCompra, mayorValorCompra Como Real
-    Definir clienteMayorCompra Como Caracter
+    Definir cl, maxProd, i, j, cantProdPorCliente, cantidad Como Entero
+    Definir subtotalCliente, descuentoCliente, ivaCliente, sumaTotal, promedioCompra, mayorValorCompra Como Real
+    Definir totalCliente, subtotProd, prodDesc, totalProd Como Real
+    Definir clienteMayorCompra, nomclient, prod Como Caracter
     
     Escribir "Bienvenido al sistema de ingreso de Clientes y productos."
     Escribir "Ingrese cuántos clientes atenderá:"
@@ -102,7 +103,7 @@ Algoritmo Punto1ClienSisVentas
         Escribir " CLIENTE: ", nomclient[j]
         Escribir "     "
         Escribir "Subtotal acumulado:   $", subtotalCliente[j]
-        Escribir "El porcentaje de descuento aplicado es; ",prodDesc[j]*100, "%"
+        Escribir "El porcentaje de descuento aplicado es; ",totDesc[j]*100, "%"
         Escribir "Descuento aplicado:  -$", descuentoCliente[j]
         Escribir "Valor de IVA (19%):   +$", ivaCliente[j]
         Escribir "TOTAL A PAGAR:  $", totalCliente[j]
