@@ -1,59 +1,123 @@
 Funcion sub <- CalcSubtot(precio, cantidad)
+    Definir sub Como Real
     sub <- precio * cantidad
 FinFuncion
 
+Funcion desc<-totaldesc(descuento)
+ desc<-descuento
+FinFuncion
+
+Funcion porcDesc <- PorDescuento(subtotalCompra)
+    Definir porcDesc Como Real
+    Si subtotalCompra >= 300000 Entonces
+        porcDesc <- 0.10
+    Sino
+        Si subtotalCompra >= 100000 Y subtotalCompra < 300000 Entonces
+            porcDesc <- 0.05
+        Sino
+            porcDesc <- 0.00
+        FinSi
+    FinSi
+FinFuncion
 
 Funcion totIVA <- CalTotIVA(subtotal)
-    totIVA <- subtotal * 1.19
+    Definir totIVA Como Real
+    totIVA <- subtotal * 0.19 
 FinFuncion
 
 Algoritmo Punto1ClienSisVentas
-	
-    Definir cant,cl Como Entero
-    Definir sumaTotal Como Real
-    cant <- 10
+    
+    Definir cl, maxProd, i, j, cantProdPorCliente, cantidad Como Entero
+    Definir subtotalCliente, descuentoCliente, ivaCliente, sumaTotal, promedioCompra, mayorValorCompra Como Real
+    Definir totalCliente, subtotProd, prodDesc, totalProd Como Real
+    Definir clienteMayorCompra, nomclient, prod Como Caracter
+    
     Escribir "Bienvenido al sistema de ingreso de Clientes y productos."
-	Escribir "En este sistema se solicitara inicialmente la cantidad de clientes que atender� (n�meros Enteros)"
-	Escribir "Ingrese cuantos clientes atendera"
-	Leer cl
-    Dimension client[cl]
-    Dimension prod[cant]
-    Dimension prec[cant]
-    Dimension cantidad[cant]
-    Dimension subtotProd[cant]
-    Dimension totalProd[cant]
-    Para j<-1 Hasta cl Hacer	
-		Escribir "Por Favor ingrese el Nombre del Cliente (",j,")"
-		Leer client[j]
-		Escribir "Por favor, ingrese cu�ntos productos quiere registrar:"
-		Leer cant
-		Para i <- 1 Hasta cant Hacer
-			Escribir "Por favor ingrese el Producto No: (", i, ")"
-			Escribir "Ingrese el nombre del producto:"
-			Leer prod[i]
-			Escribir "Ingrese el precio unitario:"
-			Leer prec[i]
-			Escribir "Ingrese la cantidad:"
-			Leer cantidad[i]
+    Escribir "Ingrese cuántos clientes atenderá:"
+    Leer cl
+    maxProd<-100
+
+    Dimension nomclient[cl]
+    Dimension subtotalCliente[cl]
+    Dimension descuentoCliente[cl]
+    Dimension ivaCliente[cl]
+    Dimension totalCliente[cl]
+    Dimension totDesc[cl]
+
+    Dimension prod[cl, maxProd]
+    Dimension prec[cl, maxProd]
+    Dimension cantidad[cl, maxProd]
+    Dimension subtotProd[cl, maxProd]
+    Dimension prodDesc[cl, maxProd]
+    Dimension totalProd[cl, maxProd]
+    Dimension cantProdPorCliente[cl]
+
+    sumaTotal <- 0
+    mayorValorCompra <- -1 
+    clienteMayorCompra <- ""
+    
+
+    Para j <- 1 Hasta cl Hacer    
+        Escribir "Registre al CLIENTE NO. ", j
+        Escribir "Por Favor ingrese el Nombre del Cliente:"
+        Leer nomclient[j]       
+        subtotalCliente[j] <- 0
+        descuentoCliente[j] <- 0
+        ivaCliente[j] <- 0
+        totalCliente[j] <- 0
+        Repetir
+            Escribir "¿Cuántos productos quiere registrar para ", nomclient[j] "?:"
+            Leer cantProdPorCliente[j]
+            Si cantProdPorCliente[j] > maxProd Entonces
+                Escribir "Error: Supera el límite máximo de productos permitido."
+            FinSi
+        Hasta Que cantProdPorCliente[j] <= maxProd
         
-			subtotProd[i] <- CalcSubtot(prec[i], cantidad[i])
-			totalProd[i] <- CalTotIVA(subtotProd[i])
-			sumaTotal <- sumaTotal + totalProd[i]
-		FinPara
-	FinPara
-	Escribir "El total de Clientes atendidos es: ",cl
-    Escribir ""
-	Para j<-1 Hasta cl Hacer
-	Escribir "Nombre del cliente ,(",j,") es: ",client[j]	
-    Para i <- 1 Hasta cant Hacer
-        Escribir "Producto ", i, ": ", prod[i]
-        Escribir "   Val Unitario $",prec[i]
-        Escribir "   cantidad  ", cantidad[i]
-        Escribir "   Subtotal: $", subtotProd[i]
-        Escribir "   Total con IVA (19%): $", totalProd[i]
+        Para i <- 1 Hasta cantProdPorCliente[j] Hacer
+            Escribir "-> Producto No: (", i, ")"
+            Escribir "Ingrese el nombre del producto:"
+            Leer prod[j, i]
+            Escribir "Ingrese el precio unitario:"
+            Leer prec[j, i]
+            Escribir "Ingrese la cantidad:"
+            Leer cantidad[j, i]
+            
+            subtotProd[j, i] <- CalcSubtot(prec[j, i], cantidad[j, i])
+            prodDesc[j, i] <- PorDescuento(subtotProd[j, i])
+            totDesc[j]<- totaldesc(prodDesc[j, i])
+            subtotalCliente[j] <- subtotalCliente[j] + subtotProd[j, i]
+            descuentoCliente[j] <- descuentoCliente[j] + (subtotProd[j, i] * prodDesc[j, i])
+            ivaCliente[j] <- ivaCliente[j] + CalTotIVA(subtotProd[j, i])
+        FinPara
+        totalCliente[j] <- subtotalCliente[j] + ivaCliente[j] - descuentoCliente[j]
+        sumaTotal <- sumaTotal + totalCliente[j]
+
+        Si totalCliente[j] > mayorValorCompra Entonces
+            mayorValorCompra <- totalCliente[j]
+            clienteMayorCompra <- nomclient[j]
+        FinSi
     FinPara
-	FinPara
-    Escribir "VALOR TOTAL A PAGAR POR LA COMPRA: $", sumaTotal
-    Escribir "Gracias por usar el sistema de Registro y total de Compra"
+    Para j <- 1 Hasta cl Hacer  
+        Escribir "     "
+        Escribir "Recibos Generales de los clientes"
+        Escribir " CLIENTE: ", nomclient[j]
+        Escribir "     "
+        Escribir "Subtotal acumulado:   $", subtotalCliente[j]
+        Escribir "El porcentaje de descuento aplicado es; ",totDesc[j]*100, "%"
+        Escribir "Descuento aplicado:  -$", descuentoCliente[j]
+        Escribir "Valor de IVA (19%):   +$", ivaCliente[j]
+        Escribir "TOTAL A PAGAR:  $", totalCliente[j]
+
+    FinPara
+
+    promedioCompra <- sumaTotal / cl
+    Escribir "   "
+    Escribir " REPORTE DE VENTAS DEL DÍA: "
+    Escribir "   "
+    Escribir " Número de clientes atendidos: ", cl
+    Escribir " Valor total vendido en el día: $", sumaTotal
+    Escribir " Promedio de compra por cliente: $", promedioCompra
+    Escribir " Cliente con la compra de mayor valor: ", clienteMayorCompra, " por valor de ($", mayorValorCompra, ")"
+    Escribir "         "
     
 FinAlgoritmo
