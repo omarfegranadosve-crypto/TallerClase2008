@@ -2,11 +2,9 @@ Funcion sub <- CalcSubtot(precio, cantidad)
     Definir sub Como Real
     sub <- precio * cantidad
 FinFuncion
-
 Funcion desc<-totaldesc(descuento)
  desc<-descuento
 FinFuncion
-
 Funcion porcDesc <- PorDescuento(subtotalCompra)
     Definir porcDesc Como Real
     Si subtotalCompra >= 300000 Entonces
